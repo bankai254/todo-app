@@ -16,6 +16,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, toggleComplete, deleteTask })
           checked={task.completed}
           onChange={() => toggleComplete(task.id)}
           className="mr-2"
+          disabled={task.dueDate.getTime() < new Date().getTime()}
         />
         <span>{task.text}</span>
         {task.dueDate && <span className="ml-2 text-xs text-gray-500">{task.dueDate.toLocaleString()}</span>}
