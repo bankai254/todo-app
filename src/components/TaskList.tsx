@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import TaskItem from "./TaskItem";
 import TaskForm from "./TaskForm";
 import { Task, TaskStatus } from "../types/types";
 import {
@@ -7,6 +6,7 @@ import {
   saveTasksToLocalStorage,
 } from "../utils/localStoage";
 import { isOverdue, isDueSoon } from "../utils/taskUtilts";
+import TaskItemStyled from "./TaskItemStyled";
 
 const TaskList: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -15,12 +15,13 @@ const TaskList: React.FC = () => {
 
   useEffect(() => {
     const loadedTasks = loadTasksFromLocalStorage();
-    console.log('local storage', loadedTasks);
+    console.log("local storage", loadedTasks);
     setTasks(loadedTasks);
   }, []);
 
   useEffect(() => {
-    if (tasks.length > 0) { // Prevent the local storage from being overwritten on reload
+    if (tasks.length > 0) {
+      // Prevent the local storage from being overwritten on reload
       saveTasksToLocalStorage(tasks);
     }
   }, [tasks]);
@@ -55,7 +56,7 @@ const TaskList: React.FC = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log('interval', tasks)
+      console.log("interval", tasks);
       setTasks((tasks) =>
         tasks.map((task) => {
           if (task.dueDate && isOverdue(task))
@@ -86,7 +87,7 @@ const TaskList: React.FC = () => {
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value as TaskStatus)}
-          className="border p-2"
+          className="mt-2 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
         >
           <option value="all">All</option>
           <option value="completed">Completed</option>
@@ -94,19 +95,21 @@ const TaskList: React.FC = () => {
         </select>
         <button
           onClick={() => setSortByDate(!sortByDate)}
-          className="border p-2"
+          className="mt-2 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
         >
           Sort by Due Date {sortByDate ? "(asc)" : "(desc)"}
         </button>
       </div>
-      {sortedTasks.map((task) => (
-        <TaskItem
-          key={task.id}
-          task={task}
-          toggleComplete={toggleComplete}
-          deleteTask={deleteTask}
-        />
-      ))}
+      <ul role="list" className="divide-y divide-gray-100">
+        {sortedTasks.map((task) => (
+          <TaskItemStyled
+            key={task.id}
+            task={task}
+            toggleComplete={toggleComplete}
+            deleteTask={deleteTask}
+          />
+        ))}
+      </ul>
     </div>
   );
 };
